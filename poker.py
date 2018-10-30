@@ -17,6 +17,9 @@ class Card(object):
     def __str__(self):
         return "%s%s" % (self.rank, self.suit)
 
+    def __lt__(self, other):
+        return ranks.index(self.get_rank()) < ranks.index(other.get_rank())
+
 
 class Deck(object):
     def __init__(self):
@@ -50,6 +53,18 @@ class Hand(object):
             hand += str(self.cards[i]) + " "
         return hand
 
+    def high_card(self):
+
+        self.cards.sort()
+        return self.cards[4]
+
+    def pair(self):
+        for i in range(5):
+            for j in range(i+1, 5):
+                if self.cards[i].get_rank() == self.cards[j].get_rank():
+                    return self.cards[i]
+        return False
+
     def is_pair(self):
         for i in range(5):
             for j in range(i+1, 5):
@@ -57,13 +72,62 @@ class Hand(object):
                     return True
         return False
 
+    def is_straight(self):
+
+        self.cards.sort()
+
+        for i in range(4):
+            if ranks.index(self.cards[i].get_rank()) + 1 != ranks.index(self.cards[i+1].get_rank()):
+                return False
+
+        return True
+
+    def is_flush(self):
+
+        suit = self.cards[0].get_suit()
+        for i in range(1, 5):
+            if suit != self.cards[i].get_suit():
+                return False
+
+        return True
+
+    def is_straight_flush(self):
+        if self.is_flush() and self.is_straight():
+            return True
+        return False
+
+    def is_royal_flush(self):
+
+        if self.high_card().get_rank() == "A"and self.is_straight_flush():
+                return True
+
+        return False
+
+    def check_ranking(self):
+
+        if self.is_royal_flush():
+            return "Royal Flush"
+        elif self.is_straight_flush():
+            return "Straight Flush"
+        elif self.is_flush():
+            return "Flush"
+        elif self.is_straight():
+            return "Straight"
+        elif self.is_pair():
+            return "Pair"
+        else:
+            return "High card"
 
 
 
-new_deck = Deck()
-new_deck.shuffle()
-print(new_deck)
-hand = Hand(new_deck)
-print(hand)
-
+# Royal flush     + K Q J 10 of same suit
+# Straight flush  + 5 cards in order same suit
+# Four of a kind  - 4 cards same rank + 1 other
+# Full House      - 3 cards same rank + 2 cards same rank
+# Flush           + 5 cards same suit
+# Straight        + 5 cards in order
+# Three of a kind - 3 cards same rank + 2 other
+# Two pair        - 2 cards same rank + 2 cards same rank + 1 other
+# Pair            + 2 cards same rank + 3 other
+# High Card       + 1 card higher than other 4
 
