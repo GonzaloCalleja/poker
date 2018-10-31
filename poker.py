@@ -2,6 +2,9 @@ import random
 suits = ["♠", "♥", "♦", "♣"]
 ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
 
+results = ['Royal Flush', 'Straight Flush', 'Four of a kind', 'Flush',
+           'Straight', 'Three of a kind', 'Pair', 'High Card']
+
 
 class Card(object):
     def __init__(self, suit, rank):
@@ -65,11 +68,28 @@ class Hand(object):
                     return self.cards[i]
         return False
 
+    def more_equal_cards(self, card, cards=[]):
+        for i in range(len(cards)):
+            for j in range(i+1, len(cards)):
+                if card.get_rank() == cards[j].get_rank():
+                    return True
+
+        return False
+
     def is_pair(self):
         for i in range(5):
             for j in range(i+1, 5):
                 if self.cards[i].get_rank() == self.cards[j].get_rank():
                     return True
+        return False
+
+    def is_three_of_a_kind(self):
+        for i in range(5):
+            for j in range(i+1, 5):
+                if self.cards[i].get_rank() == self.cards[j].get_rank():
+                    for k in range(j+1, 5):
+                        if self.cards[i].get_rank() == self.cards[k].get_rank():
+                            return True
         return False
 
     def is_straight(self):
@@ -91,6 +111,17 @@ class Hand(object):
 
         return True
 
+    def is_four_of_a_kind(self):
+        for i in range(5):
+            for j in range(i+1, 5):
+                if self.cards[i].get_rank() == self.cards[j].get_rank():
+                    for k in range(j+1, 5):
+                        if self.cards[i].get_rank() == self.cards[k].get_rank():
+                            for l in range(k+1, 5):
+                                if self.cards[i].get_rank() == self.cards[l].get_rank():
+                                    return True
+        return False
+
     def is_straight_flush(self):
         if self.is_flush() and self.is_straight():
             return True
@@ -109,24 +140,28 @@ class Hand(object):
             return "Royal Flush"
         elif self.is_straight_flush():
             return "Straight Flush"
+        elif self.is_four_of_a_kind():
+            return "Four of a kind"
         elif self.is_flush():
             return "Flush"
         elif self.is_straight():
             return "Straight"
+        elif self.is_three_of_a_kind():
+            return "Three of a kind"
         elif self.is_pair():
             return "Pair"
         else:
-            return "High card"
+            return "High Card"
 
 
 
 # Royal flush     + K Q J 10 of same suit
 # Straight flush  + 5 cards in order same suit
-# Four of a kind  - 4 cards same rank + 1 other
+# Four of a kind  + 4 cards same rank + 1 other
 # Full House      - 3 cards same rank + 2 cards same rank
 # Flush           + 5 cards same suit
 # Straight        + 5 cards in order
-# Three of a kind - 3 cards same rank + 2 other
+# Three of a kind + 3 cards same rank + 2 other
 # Two pair        - 2 cards same rank + 2 cards same rank + 1 other
 # Pair            + 2 cards same rank + 3 other
 # High Card       + 1 card higher than other 4
