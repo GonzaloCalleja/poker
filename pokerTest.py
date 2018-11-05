@@ -7,8 +7,17 @@ result_dict = {}
 for result in results:
     result_dict[result] = 0
 
+# for i in range(10000):
+#     new_deck = Deck()
+#     new_deck.shuffle()
+#     for j in range(10):
+#         hand = Hand(new_deck)
+#         if hand.is_full_house():
+#             print("Full House: ", hand)
 
-for i in range(10000):
+
+for i in range(100000):
+#while result_dict[results[0]] == 0:
 
     new_deck = Deck()
     new_deck.shuffle()
@@ -27,3 +36,7 @@ for i in result_dict:
 print(total)
 new_deck = Deck()
 print(len(new_deck.cards))
+
+for i in result_dict:
+    print(i, " ", result_dict[i]*100/total, "%", end=" ")
+

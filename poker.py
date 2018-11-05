@@ -2,8 +2,8 @@ import random
 suits = ["♠", "♥", "♦", "♣"]
 ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
 
-results = ['Royal Flush', 'Straight Flush', 'Four of a kind', 'Flush',
-           'Straight', 'Three of a kind', 'Pair', 'High Card']
+results = ['Royal Flush', 'Straight Flush', 'Four of a kind', 'Full House',
+           'Flush', 'Straight', 'Three of a kind', 'Two Pair', 'Pair', 'High Card']
 
 
 class Card(object):
@@ -61,26 +61,21 @@ class Hand(object):
         self.cards.sort()
         return self.cards[4]
 
-    def pair(self):
-        for i in range(5):
-            for j in range(i+1, 5):
-                if self.cards[i].get_rank() == self.cards[j].get_rank():
-                    return self.cards[i]
-        return False
-
-    def more_equal_cards(self, card, cards=[]):
-        for i in range(len(cards)):
-            for j in range(i+1, len(cards)):
-                if card.get_rank() == cards[j].get_rank():
-                    return True
-
-        return False
-
     def is_pair(self):
         for i in range(5):
             for j in range(i+1, 5):
                 if self.cards[i].get_rank() == self.cards[j].get_rank():
                     return True
+        return False
+
+    def is_two_pair(self):
+        pairs = 0
+        for i in range(5):
+            for j in range(i+1, 5):
+                if self.cards[i].get_rank() == self.cards[j].get_rank():
+                    pairs += 1
+        if pairs == 2:
+            return True
         return False
 
     def is_three_of_a_kind(self):
@@ -110,6 +105,16 @@ class Hand(object):
                 return False
 
         return True
+
+    def is_full_house(self):
+
+        temp = self.cards.copy()
+        temp.sort()
+
+        if self.is_three_of_a_kind():
+            if temp[0].get_rank() == temp[1].get_rank() and temp[len(temp)-1].get_rank() == temp[len(temp)-2].get_rank():
+                return True
+        return False
 
     def is_four_of_a_kind(self):
         for i in range(5):
@@ -142,12 +147,16 @@ class Hand(object):
             return "Straight Flush"
         elif self.is_four_of_a_kind():
             return "Four of a kind"
+        elif self.is_full_house():
+            return "Full House"
         elif self.is_flush():
             return "Flush"
         elif self.is_straight():
             return "Straight"
         elif self.is_three_of_a_kind():
             return "Three of a kind"
+        elif self.is_two_pair():
+            return "Two Pair"
         elif self.is_pair():
             return "Pair"
         else:
@@ -158,11 +167,11 @@ class Hand(object):
 # Royal flush     + K Q J 10 of same suit
 # Straight flush  + 5 cards in order same suit
 # Four of a kind  + 4 cards same rank + 1 other
-# Full House      - 3 cards same rank + 2 cards same rank
+# Full House      + 3 cards same rank + 2 cards same rank
 # Flush           + 5 cards same suit
 # Straight        + 5 cards in order
 # Three of a kind + 3 cards same rank + 2 other
-# Two pair        - 2 cards same rank + 2 cards same rank + 1 other
+# Two pair        + 2 cards same rank + 2 cards same rank + 1 other
 # Pair            + 2 cards same rank + 3 other
 # High Card       + 1 card higher than other 4
 
